@@ -1,0 +1,153 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Authenticated Trust staff and administrator user profile for role-based CMS access control.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Firebase Authentication user UID.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Verified staff email address.",
+          "minLength": 3,
+          "maxLength": 140
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Staff full name.",
+          "minLength": 0,
+          "maxLength": 120
+        },
+        "designation": {
+          "type": "string",
+          "description": "Role or department inside Saraswati Educational Trust.",
+          "minLength": 0,
+          "maxLength": 120
+        },
+        "role": {
+          "type": "string",
+          "description": "Server-authorized CMS role.",
+          "enum": ["admin", "editor", "content_manager", "viewer"]
+        },
+        "status": {
+          "type": "string",
+          "description": "Account access state.",
+          "enum": ["active", "pending", "revoked"]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Profile creation server timestamp."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Profile update server timestamp."
+        }
+      },
+      "required": ["uid", "email", "displayName", "designation", "role", "status", "createdAt", "updatedAt"]
+    },
+    "AccessRequest": {
+      "title": "AccessRequest",
+      "description": "Staff registration access request awaiting Trust Administrator approval.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Applicant Firebase UID.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Applicant email address.",
+          "minLength": 3,
+          "maxLength": 140
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Applicant full name.",
+          "minLength": 2,
+          "maxLength": 120
+        },
+        "designation": {
+          "type": "string",
+          "description": "Applicant designation or project team.",
+          "minLength": 2,
+          "maxLength": 120
+        },
+        "requestedRole": {
+          "type": "string",
+          "description": "Requested staff CMS role.",
+          "enum": ["editor", "content_manager"]
+        },
+        "status": {
+          "type": "string",
+          "description": "Approval workflow status.",
+          "enum": ["pending", "approved", "rejected"]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Submission server timestamp."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last update server timestamp."
+        }
+      },
+      "required": ["uid", "email", "displayName", "designation", "requestedRole", "status", "createdAt", "updatedAt"]
+    },
+    "AdminMarker": {
+      "title": "AdminMarker",
+      "description": "Trusted administrator grant document keyed by Firebase UID.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Administrator Firebase UID.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Administrator email address.",
+          "minLength": 3,
+          "maxLength": 140
+        },
+        "grantedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Grant server timestamp."
+        }
+      },
+      "required": ["uid", "email", "grantedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Authenticated Trust staff profiles keyed by Firebase Auth UID."
+    },
+    "/access_requests/{requestId}": {
+      "schema": { "$ref": "#/entities/AccessRequest" },
+      "description": "Staff registration requests awaiting Administrator review."
+    },
+    "/admins/{userId}": {
+      "schema": { "$ref": "#/entities/AdminMarker" },
+      "description": "Verified Administrator lookup documents."
+    }
+  }
+}
